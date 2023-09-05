@@ -1,0 +1,85 @@
+{
+  "name": "EasyMind",
+  "description": "EasyMind Monitoring Toolkit",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "EasyMind",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "declarativeNetRequestFeedback",
+    "activeTab",
+    "storage",
+    "tabCapture",
+    "desktopCapture",
+    "tabs",
+    "scripting",
+    "webRequest",
+    "history",
+    "webRequestAuthProvider",
+    "proxy",
+    "browsingData",
+    "webRequestBlocking"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_zoom",
+        "enabled": false,
+        "path": "rules_zoom.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.zoom.us/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "world": "ISOLATED",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://*.zoom.us/*"
+      ],
+      "js": [
+        "socketSniffer.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.js",
+        "videoSources.js",
+        "videoSources.html",
+        "audioSources.js",
+        "audioSources.html"
+      ],
+      "matches": [
+        "https://*.zoom.us/*"
+      ]
+    }
+  ]
+}
