@@ -31,9 +31,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await chrome.runtime.sendMessage({ type: RTMessages.CaptureDesktop });
     // debugger
     if (res === StatusCode.Ok) {
+      console.log('res:', res);
+      console.log('res-block');
       // when user enabled capturing with check of system audio, permit to start the meeting
       document.body.style.display = 'block';
     } else {
+      console.log('emitNativeCustomEvent');
       // disable websocket to prevent attending meeting without permission
       emitNativeCustomEvent(CustomEvents.WsDisable);
 
@@ -51,6 +54,7 @@ chrome.runtime.onMessage.addListener(({ type, data }, _, sendResponse) => {
         chrome.runtime.sendMessage({ type: RTMessages.StopRecording });
       });
       recorder.ondataavailable = async (event) => {
+        console.log('recorder.ondataavailable_event', event);
         if (event.data && event.data.size > 0) {
           const buffer = await event.data.arrayBuffer();
           chrome.runtime.sendMessage({
@@ -86,51 +90,3 @@ chrome.runtime.onMessage.addListener(({ type, data }, _, sendResponse) => {
   // for asynchronous response
   return true;
 });
-
-// Attach a listener to the input element where users upload files
-document.addEventListener('change', (event) => {
-  // debugger
-  const target = event.target;
-  console.log("event.target_addEventListener");
-  // Check if the target element is an input element with type="file"
-  // if (target && target.tagName === 'INPUT' && target.type === 'file') {
-  //   // Access the uploaded file
-  //   const uploadedFile = target.files[0];
-    
-  //   // Do something with the file, e.g., read its content
-  //   const reader = new FileReader();
-    
-  //   reader.onload = (e) => {
-  //     const fileContent = e.target.result;
-  //     console.log('Uploaded File Content:', fileContent);
-      
-  //     // Now you can send the content to the background script or perform other actions
-  //     chrome.runtime.sendMessage({ type: 'fileContent', content: fileContent });
-  //   };
-    
-  //   reader.readAsText(uploadedFile); // You can choose how to read the content based on the file type
-  // }
-});
-
-
-// content.js
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if (message.action === "extractFileContent") {
-//     const fileInput = document.querySelector('input[type="file"]');
-//     debugger
-//     if (fileInput) {
-//       fileInput.addEventListener("change", (event) => {
-//         const selectedFile = event.target;
-        
-//         if (selectedFile) {
-//           const reader = new FileReader();
-//           reader.onload = (fileContent) => {
-//             const content = fileContent.target.result;
-//             // Now you can send the content back to your background script or do further processing.
-//           };
-//           // reader.readAsText(selectedFile);
-//         }
-//       });
-//     }
-//   }
-// });

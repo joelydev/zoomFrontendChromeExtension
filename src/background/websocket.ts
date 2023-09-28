@@ -1,24 +1,47 @@
-// Create a WebSocket object
-const socket = new WebSocket('ws://192.168.5.61:9119/api/ws');
+import {stopProxyConnect} from './proxy';
 
-// Handle WebSocket connection open event
-socket.addEventListener('open', function (event) {
-  console.log('WebSocket connection established!');
-});
+let socket;
 
-// Handle WebSocket connection error event
-socket.addEventListener('error', function (event) {
-  console.error('WebSocket error:', event);
-});
+const addEventListener = (skt) => {
+  if (!skt) return;
+  // Handle WebSocket connection open event
+  skt.addEventListener('open', function (event) {
+    console.log('WebSocket connection established!');
+  });
 
-// Handle WebSocket connection close event
-socket.addEventListener('close', function (event) {
-  console.log('WebSocket connection closed:', event);
-});
+  // Handle WebSocket connection error event
+  skt.addEventListener('error', function (event) {
+    console.error('WebSocket error:', event);
+  });
 
-// Handle incoming WebSocket messages
-socket.addEventListener('message', function (event) {
-  console.log('Incoming WebSocket message:', event.data);
-});
+  // Handle WebSocket connection close event
+  skt.addEventListener('close', function (event) {
+    console.log('WebSocket connection closed and Stop Proxy Connect:', event);
+    //stopProxyConnect();
+    
+  });
 
-export default socket;
+  // Handle incoming WebSocket messages
+  skt.addEventListener('message', function (event) {
+    console.log('Incoming WebSocket message:', event.data);
+  });
+};
+
+const createSocket = (socketUrl: string) => {
+  
+  const wsUrl = socketUrl.replace("http://", "ws://") + "/api/ws";
+  console.log('socket_wsUrl', wsUrl);
+
+  socket = new WebSocket(wsUrl);
+  console.log('createSocket_ws_end');
+  addEventListener(socket);
+};
+
+const getSocket = () => {
+  return socket;
+};
+
+export default {
+  getSocket,
+  createSocket,
+};

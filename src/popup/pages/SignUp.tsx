@@ -48,7 +48,7 @@ export default function SignUp() {
         [StorageItems.AuthToken]: data.token,
         [StorageItems.UserInfo]: data.user
       });
-      setTimeout(() => navigate(POPUP_PATH.home));
+      setTimeout(() => navigate(POPUP_PATH.signIn));
     } catch (err) {
       console.error(err);
       setError(err);

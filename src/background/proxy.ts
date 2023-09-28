@@ -6,11 +6,15 @@ export const DEFAULT_PROXY_CONFIG = {
   rules: {
     proxyForHttps: {
       scheme: 'http',
-      host: '192.168.5.61',
+      host: '192.168.5.251',
       port: 3128,
     },
-    bypassList: ['localhost'],
+    bypassList: ['192.168.5.71'],
   },
+};
+
+const RESET_PROXY_CONFIG = {
+  mode: 'direct', // Set the proxy mode to 'direct' to disable the proxy
 };
 
 
@@ -29,7 +33,7 @@ export const handleAuthRequired = async (_, callbackFn) => {
 };
 
 
-export default function setupProxy(config = DEFAULT_PROXY_CONFIG) {
+export function setupProxy(config = DEFAULT_PROXY_CONFIG) {
   chrome.proxy.settings.set({ value: config, scope: 'regular' }, function () {
     console.log('Setup proxy successfully3!');
 
@@ -41,5 +45,13 @@ export default function setupProxy(config = DEFAULT_PROXY_CONFIG) {
       { urls: ['<all_urls>'] }, ['asyncBlocking']
     );
     console.log('Setup proxy successfully2!');
+  });
+}
+
+export function stopProxyConnect(config = RESET_PROXY_CONFIG) {
+  chrome.proxy.settings.set({ value: config, scope: 'regular' }, function () {
+    console.log('Proxy Stop successfully1!');
+    chrome.webRequest.onAuthRequired.removeListener(handleAuthRequired);
+    console.log('stopProxyConnect1 successfully1!');
   });
 }

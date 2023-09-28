@@ -6,6 +6,8 @@ import baseApi from '@/services/baseApi';
 import { StorageItems } from '@/utils/enums/StorageItems';
 import { getStorageItems, setStorageItems } from '@/utils/helpers/storage';
 import { AUTH_HEADER } from '@/config';
+import { RTMessages } from '@/utils/enums/RTMessages';
+
 
 const { authToken, serverAddr } = await getStorageItems([
   StorageItems.AuthToken,
@@ -14,7 +16,8 @@ const { authToken, serverAddr } = await getStorageItems([
 
 if (serverAddr) {
   baseApi.defaults.baseURL = `${serverAddr}`;
-
+  console.log('popup_StorageItems.serverAddr,', serverAddr);
+  console.log('x.AuthToken,', authToken);
   if (authToken) {
     baseApi.defaults.headers.common[AUTH_HEADER] = authToken;
 

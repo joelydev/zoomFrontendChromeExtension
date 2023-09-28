@@ -10,8 +10,14 @@ import Loading from './pages/Loading';
 import ServerInfo from './pages/ServerInfo';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import { getStorageItems } from '@/utils/helpers/storage';
+import { StorageItems } from '@/utils/enums/StorageItems';
 import { AUTH_HEADER } from '@/config';
 
+const { authToken } = await getStorageItems([
+  StorageItems.AuthToken
+]);
+console.log('--------authToken-------:', authToken);
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -19,10 +25,15 @@ const routes: RouteObject[] = [
     loader: async ({ request }) => {
       const url = new URL(request.url);
 
+      console.log('--------baseApi.defaults.baseURL-------:', baseApi.defaults.baseURL);
       if (!baseApi.defaults.baseURL) {
         if (url.pathname !== POPUP_PATH.serverInfo) {
           return redirect(POPUP_PATH.serverInfo);
         }
+        return true;
+      }
+      console.log('--------baseApi.defaults.headers.common-------:', baseApi.defaults.headers.common);
+      if (authToken) {
         return true;
       }
 

@@ -32,18 +32,48 @@ export default function ServerInfo() {
 
   const handleSaveServerInfo = useCallback(async () => {
     baseApi.defaults.baseURL = addr;
+    // setTimeout(() => {
+    //   navigate(POPUP_PATH.signIn);
+    // }, 0);
+    console.log('handlessaveUrl_addr:', addr);
+    console.log('11111111111111');
     await setStorageItems({ [StorageItems.ServerAddr]: addr }); // comment for @panda
-    await sendBackgroundToSetBaseUrl(addr);
+    console.log('222222222222');
+    // sendBackgroundToSetProxy();
+    console.log('3333333333333333');
+    sendBackgroundToSetBaseUrl(addr);
+    console.log('44444444444444444');
+
+
   }, [addr]);
 
+  const sendBackgroundToSetProxy = async () => {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({
+        type: RTMessages.SetProxy,
+      }, (response) => {
+        console.log(888888888888)
+        resolve(true)
+      });
+    })
+  };
+
   const sendBackgroundToSetBaseUrl = async (url: string) => {
-    await chrome.runtime.sendMessage({
-      type: RTMessages.SetServerAddr,
-      data: {
-        addr: url
-      },
-    });
-  }
+    return new Promise((resolve, reject) => {
+
+      console.log("sendBackgroundToSetBaseUrl_IN");
+      chrome.runtime.sendMessage({
+        type: RTMessages.SetServerAddr,
+        data: {
+          addr: url
+        },
+      }, (response) => {
+        console.log(888888888888)
+        resolve(true)
+      });
+      console.log("sendBackgroundToSetBaseUrl_END");
+    })
+  };
 
   return (
     <Box

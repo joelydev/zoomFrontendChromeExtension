@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { POPUP_PATH } from '@/utils/constants/popup';
 import { StorageItems } from '@/utils/enums/StorageItems';
 import baseApi from '@/services/baseApi';
-import { setStorageItems } from '@/utils/helpers/storage';
+import { getStorageItems, setStorageItems } from '@/utils/helpers/storage';
 import { AUTH_HEADER } from '@/config';
 import { RTMessages } from '@/utils/enums/RTMessages';
 
@@ -28,6 +28,11 @@ export default function SignIn() {
     [SignInItems.Email]: '',
     [SignInItems.Password]: '',
   });
+
+  // React.useEffect(() => {
+  //   getStorageItems([StorageItems.AuthToken]).then((items) => {
+  //   });
+  // }, []);
 
   const [error, setError] = React.useState('');
 
@@ -45,23 +50,37 @@ export default function SignIn() {
     try {
       const { data } = await baseApi.post('api/auth/signin', formData);
 
+      console.log('-------------111handlesubmit1111---------', data)
       await setStorageItems({
         [StorageItems.AuthToken]: data.token,
         [StorageItems.UserInfo]: data.user,
         [StorageItems.ProxyUsername]: data.proxyUsername,
         [StorageItems.ProxyPassword]: data.proxyPassword,
       });
-      console.log('signin_handleSubmit', data);
       baseApi.defaults.headers.common[AUTH_HEADER] = data.token;
-      setTimeout(() => {
-        navigate(POPUP_PATH.home);
-      }, 0);
-      await sendBackgroundToSetToken(data.token);
+      await getStorageItems([StorageItems.ServerAddr]).then(async (items) => {
+        setTimeout(() => {
+          navigate(POPUP_PATH.home);
+        }, 0);
+        
+        sendBackgroundToSetProxy();
+        console.log('sendBackgroundToSetProxy1');
+        sendBackgroundToSetWebsocketConnectUrl(items.serverAddr)
+        console.log('sendBackgroundToSetProxy2')
+        sendBackgroundToSetToken(data.token);
+        console.log('sendBackgroundToSetProxy3')
+      });
     } catch (err) {
       console.error(err);
       setError(err.message);
     }
   }, [formData]);
+
+  const sendBackgroundToSetProxy = async () => {
+    await chrome.runtime.sendMessage({
+      type: RTMessages.SetProxy,
+    });
+  };
 
   const sendBackgroundToSetToken = async (token: string) => {
     await chrome.runtime.sendMessage({
@@ -73,6 +92,16 @@ export default function SignIn() {
   };
 
   
+
+  const sendBackgroundToSetWebsocketConnectUrl =  (wsUrl: string) => {
+    console.log('sendBackgroundToSetWebsocketConnectUrl_called:', wsUrl);
+     chrome.runtime.sendMessage({
+      type: RTMessages.SetWebsocketConnectUrl,
+      data: {
+        wsUrl
+      },
+    });
+  };
 
   return (
     <Box

@@ -25,6 +25,9 @@ export enum RTMessages {
 
   // Config
   SetServerAddr,
+  SetWebsocketConnectUrl,
+  StopProxyConnect,
   SetToken,
-  SetProxy
+  SetProxy,
+  GetToken
 }

@@ -40,12 +40,10 @@ export default function PersistentDrawerRight() {
   React.useEffect(() => {
     getStorageItems([StorageItems.ServerAddr]).then((items) => {
       sendBackgroundToSetBaseUrl(items.serverAddr).then(() => {
-        console.log('3333');
+        console.log('response');
       });
     });
-    sendBackgroundToSetProxy().then((item) => {
-      console.log('333');
-    });
+    
   }, []);
 
   const sendBackgroundToSetBaseUrl = async (url: string) => {
@@ -57,11 +55,9 @@ export default function PersistentDrawerRight() {
     });
   };
 
-  const sendBackgroundToSetProxy = async () => {
-    await chrome.runtime.sendMessage({
-      type: RTMessages.SetProxy,
-    });
-  };
+  
+
+  
 
   // const sendBackgroundToSetToken = async (token: string) => {
   //   await chrome.runtime.sendMessage({
@@ -96,7 +92,12 @@ export default function PersistentDrawerRight() {
     }, function () {
       console.log('removed');
     });
+    handleProxyStop();
     navigate(POPUP_PATH.signIn);
+  };
+
+  const handleProxyStop = () => {
+    chrome.runtime.sendMessage({ type: RTMessages.StopProxyConnect });
   };
 
   const handleStartRecording = async () => {
