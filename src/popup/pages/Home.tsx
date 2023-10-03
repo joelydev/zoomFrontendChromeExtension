@@ -35,15 +35,17 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function PersistentDrawerRight() {
   const [open, setOpen] = React.useState(false);
+  const [userName, setUserName] = React.useState("");
+  const [proxyInfo, setProxyInfo] = React.useState("");
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    getStorageItems([StorageItems.ServerAddr]).then((items) => {
+    getStorageItems([StorageItems.UserInfo, StorageItems.ServerAddr, StorageItems.ProxyScheme, StorageItems.ProxyServerIp, StorageItems.ProxyPort]).then((items) => {
+      setUserName(items.userInfo.name);
+      setProxyInfo(items.proxyScheme + '://' + items.proxyServerIp + ':' + items.proxyPort);
       sendBackgroundToSetBaseUrl(items.serverAddr).then(() => {
-        console.log('response');
       });
     });
-    
   }, []);
 
   const sendBackgroundToSetBaseUrl = async (url: string) => {
@@ -54,19 +56,6 @@ export default function PersistentDrawerRight() {
       },
     });
   };
-
-  
-
-  
-
-  // const sendBackgroundToSetToken = async (token: string) => {
-  //   await chrome.runtime.sendMessage({
-  //     type: RTMessages.SetToken,
-  //     data: {
-  //       token
-  //     },
-  //   });
-  // }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -81,7 +70,8 @@ export default function PersistentDrawerRight() {
       [StorageItems.AuthToken]: '',
       [StorageItems.UserInfo]: {},
       [StorageItems.ProxyUsername]: '',
-      [StorageItems.ProxyPassword]: ''
+      [StorageItems.ProxyPassword]: '',
+      [StorageItems.LoginState]: 0
     });
     chrome.browsingData.remove({
       origins: [
@@ -170,7 +160,12 @@ export default function PersistentDrawerRight() {
       <Box>
         <DrawerHeader />
         <Grid container spacing={2}>
-          Recording Start
+          <Grid item xs={12}>
+            {userName && 'User Name: ' + userName}
+          </Grid>
+          <Grid item xs={12}>
+            {proxyInfo && 'Proxy IP: ' + proxyInfo}
+          </Grid>
         </Grid>
       </Box>
     </Box>

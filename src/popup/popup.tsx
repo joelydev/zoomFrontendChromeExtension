@@ -22,18 +22,20 @@ if (serverAddr) {
     baseApi.defaults.headers.common[AUTH_HEADER] = authToken;
 
     try {
+      console.log('try');
       await baseApi.get('/account', {
         headers: {
           Authorization: authToken
         }
       });
     } catch (err) {
+      console.log('catch',err);
       await setStorageItems({ [StorageItems.AuthToken]: '' });
       baseApi.defaults.headers.common[AUTH_HEADER] = '';
     }
   }
 }
-
+console.log('router_before,');
 /**
  * Warning: Don't import router statically
  *

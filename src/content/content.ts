@@ -31,12 +31,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await chrome.runtime.sendMessage({ type: RTMessages.CaptureDesktop });
     // debugger
     if (res === StatusCode.Ok) {
-      console.log('res:', res);
-      console.log('res-block');
       // when user enabled capturing with check of system audio, permit to start the meeting
       document.body.style.display = 'block';
     } else {
-      console.log('emitNativeCustomEvent');
       // disable websocket to prevent attending meeting without permission
       emitNativeCustomEvent(CustomEvents.WsDisable);
 

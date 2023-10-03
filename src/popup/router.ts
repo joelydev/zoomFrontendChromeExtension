@@ -14,10 +14,10 @@ import { getStorageItems } from '@/utils/helpers/storage';
 import { StorageItems } from '@/utils/enums/StorageItems';
 import { AUTH_HEADER } from '@/config';
 
-const { authToken } = await getStorageItems([
-  StorageItems.AuthToken
+var  {loginState}  = await getStorageItems([
+  StorageItems.LoginState
 ]);
-console.log('--------authToken-------:', authToken);
+
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -32,8 +32,8 @@ const routes: RouteObject[] = [
         }
         return true;
       }
-      console.log('--------baseApi.defaults.headers.common-------:', baseApi.defaults.headers.common);
-      if (authToken) {
+
+      if (loginState == 1) {
         return true;
       }
 

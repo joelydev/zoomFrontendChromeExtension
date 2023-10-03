@@ -4,5 +4,11 @@ export enum StorageItems {
   UserInfo = 'userInfo',
   ProxyUsername = 'proxyUsername',
   ProxyPassword = 'proxyPassword',
-  RecordingTabId = 'recordingTabId'
+  RecordingTabId = 'recordingTabId',
+
+  ProxyScheme   = 'proxyScheme',
+  ProxyServerIp = 'proxyServerIp',
+  ProxyPort     = 'proxyPort',
+
+  LoginState    = 'loginState'
 }

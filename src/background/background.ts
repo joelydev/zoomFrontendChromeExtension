@@ -14,32 +14,31 @@ let fetchConfig = {
   token: '',
 };
 
-chrome.runtime.onInstalled.addListener(() => {
-  // console.log('chrome.runtime.onInstalled.addListener_before_setupProxy');
-  // setupProxy();
-});
+// chrome.runtime.onInstalled.addListener(() => {
+//   // console.log('chrome.runtime.onInstalled.addListener_before_setupProxy');
+//   // setupProxy();
+// });
 
 chrome.windows.onCreated.addListener(() => {
   console.log('onCreated');
-  stopProxyConnect();
-  // console.log('chrome.runtime.onCreated.addListener_before_setupProxy');
-  // setupProxy();
+// stopProxyConnect();
+// console.log('chrome.runtime.onCreated.addListener_before_setupProxy');
+// setupProxy();
 });
 
 chrome.runtime.onSuspend.addListener(function () {
   console.log('onSuspend');
-  // Send a message to your React app to notify it of the browser closing.
-  stopProxyConnect();
-  // chrome.runtime.sendMessage({ event: 'browser_closing' }, function (response) {
-  //   // Handle the response if needed.
-  // });
+// Send a message to your React app to notify it of the browser closing.
+// stopProxyConnect();
+// chrome.runtime.sendMessage({ event: 'browser_closing' }, function (response) {
+//   // Handle the response if needed.
 });
 
 chrome.runtime.onSuspendCanceled.addListener(function () {
-  // This event fires when Chrome is about to close but is canceled.
-  // It's a good place to cancel any cleanup tasks if needed.
+//   // This event fires when Chrome is about to close but is canceled.
+//   // It's a good place to cancel any cleanup tasks if needed.
   console.log('onSuspendCanceled');
-  stopProxyConnect();
+//   stopProxyConnect();
 });
 
 const stopRecording = async () => {

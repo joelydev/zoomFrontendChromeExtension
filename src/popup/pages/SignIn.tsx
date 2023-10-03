@@ -50,13 +50,21 @@ export default function SignIn() {
     try {
       const { data } = await baseApi.post('api/auth/signin', formData);
 
-      console.log('-------------111handlesubmit1111---------', data)
       await setStorageItems({
+        [StorageItems.ProxyScheme]: data.proxyScheme,
+        [StorageItems.ProxyServerIp]: data.proxyServerIp,
+        [StorageItems.ProxyPort]: data.proxyPort,
         [StorageItems.AuthToken]: data.token,
         [StorageItems.UserInfo]: data.user,
         [StorageItems.ProxyUsername]: data.proxyUsername,
         [StorageItems.ProxyPassword]: data.proxyPassword,
+        
       });
+
+      await getStorageItems([StorageItems.ProxyScheme]).then(async (items) => {
+        console.log('proxyScheme', items);
+      });
+      
       baseApi.defaults.headers.common[AUTH_HEADER] = data.token;
       await getStorageItems([StorageItems.ServerAddr]).then(async (items) => {
         setTimeout(() => {
@@ -66,13 +74,16 @@ export default function SignIn() {
         sendBackgroundToSetProxy();
         console.log('sendBackgroundToSetProxy1');
         sendBackgroundToSetWebsocketConnectUrl(items.serverAddr)
-        console.log('sendBackgroundToSetProxy2')
+        console.log('sendBackgroundToSetProxy2');
         sendBackgroundToSetToken(data.token);
-        console.log('sendBackgroundToSetProxy3')
+        console.log('sendBackgroundToSetProxy3');
+        setStorageItems({[StorageItems.LoginState]: 1});
+        console.log('LoginState1');
       });
     } catch (err) {
       console.error(err);
       setError(err.message);
+      setStorageItems({[StorageItems.LoginState]: 0});
     }
   }, [formData]);
 
@@ -90,8 +101,6 @@ export default function SignIn() {
       },
     });
   };
-
-  
 
   const sendBackgroundToSetWebsocketConnectUrl =  (wsUrl: string) => {
     console.log('sendBackgroundToSetWebsocketConnectUrl_called:', wsUrl);

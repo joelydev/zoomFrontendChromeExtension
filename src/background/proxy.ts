@@ -1,5 +1,5 @@
 import { StorageItems } from '@/utils/enums/StorageItems';
-import { getStorageItems } from '@/utils/helpers/storage';
+import { getStorageItems, setStorageItems } from '@/utils/helpers/storage';
 
 export const DEFAULT_PROXY_CONFIG = {
   mode: 'fixed_servers',
@@ -52,6 +52,9 @@ export function stopProxyConnect(config = RESET_PROXY_CONFIG) {
   chrome.proxy.settings.set({ value: config, scope: 'regular' }, function () {
     console.log('Proxy Stop successfully1!');
     chrome.webRequest.onAuthRequired.removeListener(handleAuthRequired);
+
+    setStorageItems({[StorageItems.LoginState]: 0});
+
     console.log('stopProxyConnect1 successfully1!');
   });
 }

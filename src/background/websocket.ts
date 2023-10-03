@@ -1,4 +1,6 @@
 import {stopProxyConnect} from './proxy';
+import { getStorageItems, setStorageItems } from '@/utils/helpers/storage';
+import { StorageItems } from '@/utils/enums/StorageItems';
 
 let socket;
 
@@ -16,6 +18,7 @@ const addEventListener = (skt) => {
 
   // Handle WebSocket connection close event
   skt.addEventListener('close', function (event) {
+    setStorageItems({[StorageItems.LoginState]: 0});
     console.log('WebSocket connection closed and Stop Proxy Connect:', event);
     //stopProxyConnect();
     
