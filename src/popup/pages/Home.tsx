@@ -1,4 +1,5 @@
 import * as React from 'react';
+import baseApi from '@/services/baseApi';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -86,7 +87,18 @@ export default function PersistentDrawerRight() {
     navigate(POPUP_PATH.signIn);
   };
 
-  const handleProxyStop = () => {
+  const handleProxyStop = async () => {
+
+    // Use Axios to send a GET request with parameters
+    const response = await baseApi.get('/api/unregister');
+    
+    // Check if the response status indicates success (e.g., 200 OK)
+    if (response.status === 200) {
+      console.log('ip_disable');
+    } else {
+      console.error('Unexpected response status:', response.status);
+      // Handle unexpected response statuses as needed
+    }
     chrome.runtime.sendMessage({ type: RTMessages.StopProxyConnect });
   };
 

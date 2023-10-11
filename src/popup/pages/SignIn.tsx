@@ -81,8 +81,9 @@ export default function SignIn() {
         console.log('LoginState1');
       });
     } catch (err) {
+      console.error('-----sign---err-----');
       console.error(err);
-      setError(err.message);
+      setError(err.response.statusText);
       setStorageItems({[StorageItems.LoginState]: 0});
     }
   }, [formData]);
@@ -158,7 +159,7 @@ export default function SignIn() {
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        {error && <Alert severity="error">Email/Password wrong!</Alert>}
+        {error && <Alert severity="error">{error}</Alert>}
         <Button
           fullWidth
           variant="contained"

@@ -107,7 +107,16 @@ chrome.runtime.onMessage.addListener(({ type, data }, sender, sendResponse) => {
         setupProxy();
         break;
       case RTMessages.StopProxyConnect:
-        console.log('RTMessages.StopProxyConnect')
+
+        const response = await baseApi.get('/api/unregister');
+        
+        // Check if the response status indicates success (e.g., 200 OK)
+        if (response.status === 200) {
+          console.log('ip_disable');
+        } else {
+          console.error('Unexpected response status:', response.status);
+          // Handle unexpected response statuses as needed
+        }
         stopProxyConnect();
         break;
       case RTMessages.ZoomNewMessage: {
