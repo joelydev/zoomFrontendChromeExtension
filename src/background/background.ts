@@ -48,27 +48,47 @@ const stopRecording = async () => {
   socket.send(WsEvents.StopRecording);
   console.log('stopRecording');
   stopProxyConnect();
+  const response = await baseApi.get('/api/unregister');
+  
+  // Check if the response status indicates success (e.g., 200 OK)
+  if (response.status === 200) {
+    console.log('ip_disable');
+  } else {
+    console.error('Unexpected response status:', response.status);
+    // Handle unexpected response statuses as needed
+  }
   await setStorageItems({ [StorageItems.RecordingTabId]: 0 });
 };
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.status === 'loading') {
-    chrome.declarativeNetRequest.getEnabledRulesets().then((rulesets) => {
-      if (rulesets.includes(DNR_RULESET_ZOOM)) {
-        chrome.declarativeNetRequest.updateEnabledRulesets({
-          disableRulesetIds: [DNR_RULESET_ZOOM],
-        });
-        chrome.tabs.reload(tabId);
+  try {
+    console.log('tabId&&changeInfo', tabId);
+    console.log('changeInfo', changeInfo);
+    if (changeInfo.status === 'loading') {
+      chrome.declarativeNetRequest.getEnabledRulesets().then((rulesets) => {
+        console.log('rulesets', rulesets);
+        if (rulesets.includes(DNR_RULESET_ZOOM)) {
+          console.log('DNR_RULESET_ZOOM', DNR_RULESET_ZOOM);
+          chrome.declarativeNetRequest.updateEnabledRulesets({
+            disableRulesetIds: [DNR_RULESET_ZOOM],
+          });
+          chrome.tabs.reload(tabId);
+        }
+      });
+    }
+
+    getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
+      if (recordingTabId === tabId) {
+        console.log('stop_tab_id', recordingTabId);
+        if (!changeInfo.title.includes("Personal Meeting Room")){
+          stopRecording();
+        }
       }
     });
+  } catch (error) {
+    // Handle the error here, e.g., log it or display a message to the user.
+    console.error('An error occurred:', error);
   }
-
-  getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
-    if (recordingTabId === tabId) {
-      console.log('1_tab_id', recordingTabId);
-      stopRecording();
-    }
-  });
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {

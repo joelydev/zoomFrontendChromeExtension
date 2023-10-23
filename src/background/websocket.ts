@@ -16,14 +16,17 @@ const addEventListener = (skt) => {
     console.error('WebSocket error:', event);
   });
 
-  // Handle WebSocket connection close event
+  
   skt.addEventListener('close', function (event) {
-    setStorageItems({[StorageItems.LoginState]: 0});
-    console.log('WebSocket connection closed and Stop Proxy Connect:', event);
-    //stopProxyConnect();
-    
+    console.log('WebSocket connection closed:', event);
+    // Reconnect by calling createSocket
+    getStorageItems([StorageItems.ServerAddr]).then(async (items) => {
+      createSocket(items.serverAddr);
+    });
   });
 
+  
+  
   // Handle incoming WebSocket messages
   skt.addEventListener('message', function (event) {
     console.log('Incoming WebSocket message:', event.data);
@@ -33,7 +36,6 @@ const addEventListener = (skt) => {
 const createSocket = (socketUrl: string) => {
   
   const wsUrl = socketUrl.replace("http://", "ws://") + "/api/ws";
-  console.log('socket_wsUrl', wsUrl);
 
   socket = new WebSocket(wsUrl);
   console.log('createSocket_ws_end');
