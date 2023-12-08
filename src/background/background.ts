@@ -42,11 +42,9 @@ chrome.runtime.onSuspendCanceled.addListener(function () {
 });
 
 const stopRecording = async () => {
-  const socket = webSocket.getSocket();
-  console.log('socket', socket);
+    const socket = webSocket.getSocket();
   if (!socket) return;
   socket.send(WsEvents.StopRecording);
-  console.log('stopRecording');
   stopProxyConnect();
   const response = await baseApi.get('/api/unregister');
   
@@ -62,13 +60,9 @@ const stopRecording = async () => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   try {
-    console.log('tabId&&changeInfo', tabId);
-    console.log('changeInfo', changeInfo);
     if (changeInfo.status === 'loading') {
       chrome.declarativeNetRequest.getEnabledRulesets().then((rulesets) => {
-        console.log('rulesets', rulesets);
         if (rulesets.includes(DNR_RULESET_ZOOM)) {
-          console.log('DNR_RULESET_ZOOM', DNR_RULESET_ZOOM);
           chrome.declarativeNetRequest.updateEnabledRulesets({
             disableRulesetIds: [DNR_RULESET_ZOOM],
           });
@@ -79,8 +73,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
     getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
       if (recordingTabId === tabId) {
-        console.log('stop_tab_id', recordingTabId);
-        if (!changeInfo.title.includes("Personal Meeting Room")){
+        if (!changeInfo.title) {
+        }
+        else if (changeInfo.title !== 'zoom.us' && !changeInfo.title.includes("connect") && changeInfo.title !== "Zoom" && !changeInfo.title.includes("Zoom Meeting")  && !changeInfo.title.includes("Zoom") && !changeInfo.title.includes("Connecting...") && !changeInfo.title.includes("Personal Meeting Room")){
           stopRecording();
         }
       }
@@ -94,7 +89,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 chrome.tabs.onRemoved.addListener((tabId) => {
   getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
     if (recordingTabId === tabId) {
-      console.log('2_tab_id', recordingTabId);
+      setStorageItems({[StorageItems.LoginState]: 0});
       stopRecording();
     }
   });

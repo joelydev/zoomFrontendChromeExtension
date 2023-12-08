@@ -24,6 +24,7 @@ window.addEventListener(CustomEvents.WsData, (event: CustomEvent) => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
+ 
   // validate permission when current url is for alive meeting
   if (REGX_ZOOM_MEETING.test(location.href)) {
     document.body.style.display = 'none';
@@ -51,7 +52,6 @@ chrome.runtime.onMessage.addListener(({ type, data }, _, sendResponse) => {
         chrome.runtime.sendMessage({ type: RTMessages.StopRecording });
       });
       recorder.ondataavailable = async (event) => {
-        console.log('recorder.ondataavailable_event', event);
         if (event.data && event.data.size > 0) {
           const buffer = await event.data.arrayBuffer();
           chrome.runtime.sendMessage({
@@ -64,23 +64,6 @@ chrome.runtime.onMessage.addListener(({ type, data }, _, sendResponse) => {
       recorder.start(1000);
 
       sendResponse(StatusCode.Ok);
-    }
-
-    if (type === RTMessages.InteractWithUploadForm) {
-      // Perform DOM manipulation to interact with the file upload form
-      const uploadInput: any = document.querySelector("input[type='file']");
-      if (uploadInput && uploadInput.files.length > 0) {
-        const file = uploadInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function(event) {
-          const fileContent = event.target.result;
-          // Process the captured file content here
-          console.log("Captured file content:", fileContent);
-        };
-
-        reader.readAsText(file);
-      }
     }
   })();
 
