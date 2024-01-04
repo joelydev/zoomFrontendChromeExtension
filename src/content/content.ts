@@ -52,8 +52,12 @@ chrome.runtime.onMessage.addListener(({ type, data }, _, sendResponse) => {
         console.log('content.ts:StopRecording')
         chrome.runtime.sendMessage({ type: RTMessages.StopRecording });
       });
+<<<<<<< HEAD
             recorder.ondataavailable = async (event) => {
         console.log('recorder.ondataavailable_event', event);
+=======
+      recorder.ondataavailable = async (event) => {
+>>>>>>> bcd454d4229c81cfd67638c05cffc24de9e135b4
         if (event.data && event.data.size > 0) {
           const buffer = await event.data.arrayBuffer();
           chrome.runtime.sendMessage({

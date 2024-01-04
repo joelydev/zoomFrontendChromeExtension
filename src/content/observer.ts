@@ -43,11 +43,17 @@ async function traverseNode(node: Node, data?: ZoomChat) {
 }
 
 export function observeDomMutations() {
+<<<<<<< HEAD
   console.log('observeDomMutations called');
   const observer = new MutationObserver(async (mutations) => {
     for (const mutation of mutations) {
       for (const addedNode of mutation.addedNodes) {
         console.log("observer.ts: addedNode of mutation.addedNodes");
+=======
+  const observer = new MutationObserver(async (mutations) => {
+    for (const mutation of mutations) {
+      for (const addedNode of mutation.addedNodes) {
+>>>>>>> bcd454d4229c81cfd67638c05cffc24de9e135b4
         const data = await traverseNode(addedNode);
         if (data.id) {
           console.log("observer.ts: RTMessages.ZoomNewMessage");

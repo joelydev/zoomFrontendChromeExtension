@@ -42,8 +42,12 @@ chrome.runtime.onSuspendCanceled.addListener(function () {
 });
 
 const stopRecording = async () => {
+<<<<<<< HEAD
   console.log('background-stopRecording-Call');
   const socket = webSocket.getSocket();
+=======
+    const socket = webSocket.getSocket();
+>>>>>>> bcd454d4229c81cfd67638c05cffc24de9e135b4
   if (!socket) return;
   socket.send(WsEvents.StopRecording);
   stopProxyConnect();
@@ -74,6 +78,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
     getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
       if (recordingTabId === tabId) {
+<<<<<<< HEAD
         console.log("|" + changeInfo.title+"|");
         console.log(changeInfo.title);
         console.log(!changeInfo.title);
@@ -84,6 +89,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
         }
         else if (changeInfo.title !== 'zoom.us' && !changeInfo.title.includes("connect") && changeInfo.title !== "Zoom" && !changeInfo.title.includes("Zoom Meeting")  && !changeInfo.title.includes("Zoom") && !changeInfo.title.includes("Connecting...") && !changeInfo.title.includes("Personal Meeting Room")){
           console.log("------------stopRecording-title-----------");
+=======
+        if (!changeInfo.title) {
+        }
+        else if (changeInfo.title !== 'zoom.us' && !changeInfo.title.includes("connect") && changeInfo.title !== "Zoom" && !changeInfo.title.includes("Zoom Meeting")  && !changeInfo.title.includes("Zoom") && !changeInfo.title.includes("Connecting...") && !changeInfo.title.includes("Personal Meeting Room")){
+>>>>>>> bcd454d4229c81cfd67638c05cffc24de9e135b4
           stopRecording();
         }
       }
@@ -97,7 +107,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 chrome.tabs.onRemoved.addListener((tabId) => {
   getStorageItems([StorageItems.RecordingTabId]).then(({ recordingTabId }) => {
     if (recordingTabId === tabId) {
+<<<<<<< HEAD
       console.log('setStorageItems({[StorageItems.LoginState]: 0})');
+=======
+>>>>>>> bcd454d4229c81cfd67638c05cffc24de9e135b4
       setStorageItems({[StorageItems.LoginState]: 0});
       stopRecording();
     }
