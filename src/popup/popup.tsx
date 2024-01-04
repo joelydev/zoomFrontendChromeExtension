@@ -23,7 +23,7 @@ if (serverAddr) {
 
     try {
       console.log('try');
-      await baseApi.get('/account', {
+      await baseApi.get('/api/account', {
         headers: {
           Authorization: authToken
         }
